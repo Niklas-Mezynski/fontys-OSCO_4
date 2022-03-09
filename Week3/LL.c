@@ -6,7 +6,7 @@ void constructLL(LL *list)
 {
     // node *firstNode;
     node *head;
-    head = malloc(sizeof(node));
+    head = (node *)malloc(sizeof(node));
     head = NULL;
     list->head = head;
 }
@@ -26,7 +26,7 @@ void printLL(LL *list)
 void addFrontLL(LL *list, int number)
 {
     node *newNode;
-    newNode = malloc(sizeof(node));
+    newNode = (node *)malloc(sizeof(node));
 
     newNode->value = number;
     newNode->next = list->head;
@@ -37,7 +37,8 @@ void addRearLL(LL *list, int number)
 {
     node *tail = list->head;
     node *current = list->head;
-    if (current == NULL) {
+    if (current == NULL)
+    {
         addFrontLL(list, number);
         return;
     }
@@ -48,7 +49,7 @@ void addRearLL(LL *list, int number)
     tail = current;
 
     node *newNode;
-    newNode = malloc(sizeof(node));
+    newNode = (node *)malloc(sizeof(node));
 
     newNode->value = number;
     newNode->next = tail->next;
@@ -69,7 +70,6 @@ int numbInLL(LL *list)
 
 void copyLL(LL *list1, LL *list2)
 {
-    destructLL(list2);
     constructLL(list1);
     node *currentL2 = list2->head;
     while (currentL2 != NULL)
@@ -83,17 +83,22 @@ void destructLL(LL *list)
 {
     node *toClear;
     node *current = list->head;
-    while (current != NULL)
+    while (current->next != NULL)
     {
         toClear = current;
         current = current->next;
         free(toClear);
     }
     free(current);
-    free(list);
 }
 
-void deleteLL (LL *list, int number)
+// Deletes the front element
+void deleteLL(LL *list)
 {
-    
+    if (list->head->next != NULL)
+    {
+        node* toRemove = list->head;
+        list->head = toRemove->next;
+        free(toRemove);
+    }
 }

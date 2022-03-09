@@ -22,9 +22,10 @@ void constructLL(LL *list);
 void printLL(LL *list);
 void addRearLL(LL *list, int number);
 int numbInLL(LL *list);
-void deleteLL(LL *list, int number);
+
+//Deletes the front element
+void deleteLL(LL *list);
 void copyLL(LL *list1, LL *list2);
 void destructLL(LL *list);
-
 #endif
 /*eof LL.h*/
