@@ -31,4 +31,3 @@ int main() {
    delete_task(t1);
    free(t1);
 }
-
