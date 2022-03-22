@@ -1,5 +1,5 @@
-CC=gcc -m32
-CFLAGS=-I.
+CC=gcc
+CFLAGS=-m32 -I.
 DEP=ntk_5.4.h
 OBJECTS=ntk_5.4.o main.o
 
