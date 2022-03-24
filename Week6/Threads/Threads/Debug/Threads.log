@@ -1,0 +1,6 @@
+﻿  main.c
+C:\Users\nikla\source\repos\Threads\Threads\main.c(67,11): warning C4101: 'threads': unreferenced local variable
+C:\Users\nikla\source\repos\Threads\Threads\main.c(120): warning C4716: 'taskCodeDown': must return a value
+C:\Users\nikla\source\repos\Threads\Threads\main.c(127): warning C4716: 'taskCode': must return a value
+C:\Users\nikla\source\repos\Threads\Threads\main.c(105): warning C4716: 'taskCodeUp': must return a value
+  Threads.vcxproj -> C:\Users\nikla\source\repos\Threads\Debug\Threads.exe

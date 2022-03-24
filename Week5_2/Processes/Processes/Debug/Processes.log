@@ -1,3 +1,11 @@
 ﻿  main.c
-C:\Users\nikla\Documents\Uni\Semester_4\C\OSCO_4\Week5_2\Processes\Processes\main.c(32): warning C4716: 'taskCode': must return a value
-  Processes.vcxproj -> C:\Users\nikla\Documents\Uni\Semester_4\C\OSCO_4\Week5_2\Processes\Debug\Processes.exe
+  ntk_5.4.c
+C:\Users\nikla\Documents\Semester_4\OSCO_4\Week5_2\Processes\Processes\ntk_5.4.c(186,21): warning C4047: "return": Anzahl der Dereferenzierungen bei "void *" und "unsigned int" unterschiedlich
+C:\Users\nikla\Documents\Semester_4\OSCO_4\Week5_2\Processes\Processes\ntk_5.4.c(212,9): warning C4477: "printf": Die Formatzeichenfolge "%x" erfordert ein Argument vom Typ "unsigned int", das variadic-Argument "1" weist aber den Typ "_task *" auf.
+C:\Users\nikla\Documents\Semester_4\OSCO_4\Week5_2\Processes\Processes\ntk_5.4.c(219,11): warning C4101: "pID": Unreferenzierte lokale Variable
+  Code wird generiert...
+C:\Users\nikla\Documents\Semester_4\OSCO_4\Week5_2\Processes\Processes\ntk_5.4.c(213): warning C4716: "printTaskCB": Muss einen Wert zurückgeben
+C:\Users\nikla\Documents\Semester_4\OSCO_4\Week5_2\Processes\Processes\ntk_5.4.c(200): warning C4716: "getTib": Muss einen Wert zurückgeben
+C:\Users\nikla\Documents\Semester_4\OSCO_4\Week5_2\Processes\Processes\ntk_5.4.c(234): warning C4716: "printTIB": Muss einen Wert zurückgeben
+C:\Users\nikla\Documents\Semester_4\OSCO_4\Week5_2\Processes\Processes\main.c(32): warning C4716: "taskCode": Muss einen Wert zurückgeben
+  Processes.vcxproj -> C:\Users\nikla\Documents\Semester_4\OSCO_4\Week5_2\Processes\Debug\Processes.exe
