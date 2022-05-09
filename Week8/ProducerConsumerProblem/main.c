@@ -88,7 +88,7 @@ DWORD WINAPI NewWriter(LPVOID lpParam) {
 
 			// Release the semaphore when task is finished
 			if (!ReleaseSemaphore(
-				emptybuffers,  // handle to semaphore
+				fullbuffers,  // handle to semaphore
 				1,            // increase count by one
 				NULL))       // not interested in previous count
 			{
@@ -137,7 +137,7 @@ DWORD WINAPI NewReader(LPVOID lpParam) {
 
 		// Try to enter the semaphore gate.
 		dwWaitResult = WaitForSingleObject(
-			emptybuffers,   // handle to semaphore
+			fullbuffers,   // handle to semaphore
 			0L);           // zero-second time-out interval
 
 		if (dwWaitResult == WAIT_OBJECT_0)
