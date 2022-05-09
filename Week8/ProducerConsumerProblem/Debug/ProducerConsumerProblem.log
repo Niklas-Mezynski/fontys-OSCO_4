@@ -1,2 +1,5 @@
 ﻿  main.c
-  ProducerConsumerProblem.vcxproj -> C:\Users\nikla\Documents\Semester_4\OSCO_4\Week8\ProducerConsumerProblem\Debug\ProducerConsumerProblem.exe
+C:\Users\nikla\Documents\Uni\Semester_4\C\OSCO_4\Week8\ProducerConsumerProblem\main.c(156,7): warning C4101: 'taken': unreferenced local variable
+C:\Users\nikla\Documents\Uni\Semester_4\C\OSCO_4\Week8\ProducerConsumerProblem\main.c(125): warning C4715: 'NewWriter': not all control paths return a value
+C:\Users\nikla\Documents\Uni\Semester_4\C\OSCO_4\Week8\ProducerConsumerProblem\main.c(199): warning C4715: 'NewReader': not all control paths return a value
+  ProducerConsumerProblem.vcxproj -> C:\Users\nikla\Documents\Uni\Semester_4\C\OSCO_4\Week8\ProducerConsumerProblem\Debug\ProducerConsumerProblem.exe
