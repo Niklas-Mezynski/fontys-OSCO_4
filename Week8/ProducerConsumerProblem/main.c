@@ -48,34 +48,6 @@ int main(int argc, char** argv)
 	return 0;
 }
 
-
-/* Writer
-* -------
-* This is the routine forked by the writer thread. It will loop until
-* all data (DATA_LENGTH) is read. It prepares (Generate a random character) the data to be written, waits for an
-* empty buffer and signals that a full buffer is ready to be read.
-*/
-//unsigned __stdcall Writer(void* arg)
-//{
-//	task* t = (task*)arg;
-//	char rand;
-//	while (true)
-//	{
-//		//Produce
-//		rand = rand_between('B', 'Y');
-//
-//		wait_semaphore(&emptybuffers);
-//		//Append
-//		buffers[writeI] = rand;
-//		readI = writeI;
-//		writeI = (writeI + 1) % 5;
-//		printf("Writer wrote: %c\n", rand);
-//		Sleep(1000);
-//
-//		signal_semaphore(&fullbuffers);
-//	}
-//}
-
 DWORD WINAPI NewWriter(LPVOID lpParam) {
 	DWORD dwWaitResult;
 	BOOL bContinue = TRUE;
@@ -95,13 +67,16 @@ DWORD WINAPI NewWriter(LPVOID lpParam) {
 		if (dwWaitResult == WAIT_OBJECT_0)
 		{
 			//Produce
-
+			rand = rand_between('B', 'Y');
+			printf("Writer writing: %c\n", rand);
 			//Append
-			/*buffers[writeI] = rand;
+			buffers[writeI] = rand;
 			readI = writeI;
-			writeI = (writeI + 1) % 5;*/
+			writeI = (writeI + 1) % 5;
+			writes++;
+			Sleep(1000);
 			
-			printf("Writer writing...:");
+			/*printf("Writer writing...:");
 			for (int i = 0; i < NUM_TOTAL_BUFFERS; i++)
 			{
 				rand = rand_between('B', 'Y');
@@ -109,8 +84,7 @@ DWORD WINAPI NewWriter(LPVOID lpParam) {
 				printf(" %c", rand);
 				Sleep(1000 / NUM_DISCHARGE_POLICIES);
 			}
-			printf("\n");
-			writes++;
+			printf("\n");*/
 
 			// Release the semaphore when task is finished
 			if (!ReleaseSemaphore(
@@ -169,14 +143,14 @@ DWORD WINAPI NewReader(LPVOID lpParam) {
 		if (dwWaitResult == WAIT_OBJECT_0)
 		{
 			//Take
-			//taken = buffers[readI];
-			//buffers[readI] = 0;
-			//reads++;
-			//Sleep(1000);
-			////Consume (print buffer)
-			//printf("        Reader read: %c\n", taken);
+			taken = buffers[readI];
+			buffers[readI] = 0;
+			reads++;
+			printf("        Reader read: %c\n", taken);
+			Sleep(1000);
+			//Consume (print buffer)
 
-			printf("Reader reading...:");
+			/*printf("Reader reading...:");
 			for (int i = 0; i < NUM_TOTAL_BUFFERS; i++)
 			{
 				printf(" %c", buffers[i]);
@@ -184,7 +158,7 @@ DWORD WINAPI NewReader(LPVOID lpParam) {
 				Sleep(1000 / NUM_DISCHARGE_POLICIES);
 			}
 			printf("\n");
-			reads++;
+			reads++;*/
 
 			// Release the semaphore when task is finished
 			if (!ReleaseSemaphore(
