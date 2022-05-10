@@ -6,11 +6,12 @@
 #define NUM_TOTAL_BUFFERS 5
 #define DATA_LENGTH 10
 
-char buffers[NUM_TOTAL_BUFFERS];            //The shared buffer
-HANDLE emptybuffers, fullbuffers;			//Semaphores
+char buffers[NUM_TOTAL_BUFFERS][DATA_LENGTH];	//The shared buffer
+HANDLE emptybuffers, fullbuffers;				//Semaphores
 int writeI = 0;
 int readI = 0;
 int readsWrites = 10;
+CRITICAL_SECTION criticalSection;
 
 DWORD WINAPI NewWriter(LPVOID lpParam);
 DWORD WINAPI NewReader(LPVOID lpParam);
@@ -19,6 +20,8 @@ int main(int argc, char** argv)
 {
 	HANDLE  hThreadArray[2];
 	printf("Main started. %d buffers and %d Data.\n", NUM_TOTAL_BUFFERS, DATA_LENGTH);
+
+	InitializeCriticalSection(&criticalSection);
 
 	emptybuffers =  CreateSemaphore(
 		NULL,           // default security attributes
@@ -48,13 +51,18 @@ int main(int argc, char** argv)
 	return 0;
 }
 
+/* Writer
+* -------
+* This is the routine forked by the writer thread. It will loop until
+* all data (DATA_LENGTH) is read. It prepares (Generate a random character) the data to be written, waits for an
+* empty buffer and signals that a full buffer is ready to be read.
+*/
 DWORD WINAPI NewWriter(LPVOID lpParam) {
 	DWORD dwWaitResult;
-	BOOL bContinue = TRUE;
 	char rand;
 	int writes = 0;
 
-	while (bContinue)
+	while (TRUE)
 	{
 		if (writes >= readsWrites)
 			return 0;
@@ -66,25 +74,17 @@ DWORD WINAPI NewWriter(LPVOID lpParam) {
 
 		if (dwWaitResult == WAIT_OBJECT_0)
 		{
+			EnterCriticalSection(&criticalSection);
 			//Produce
-			rand = rand_between('B', 'Y');
-			printf("Writer writing: %c\n", rand);
-			//Append
-			buffers[writeI] = rand;
-			readI = writeI;
-			writeI = (writeI + 1) % 5;
-			writes++;
-			Sleep(1000);
-			
-			/*printf("Writer writing...:");
-			for (int i = 0; i < NUM_TOTAL_BUFFERS; i++)
+			for (int i = 0; i < DATA_LENGTH; i++)
 			{
 				rand = rand_between('B', 'Y');
-				buffers[i] = rand;
-				printf(" %c", rand);
-				Sleep(1000 / NUM_DISCHARGE_POLICIES);
+				buffers[writeI][i] = rand;
 			}
-			printf("\n");*/
+			//Filled one buffer
+			printf("Writer wrote to buffer[%d]: %s\n", writeI, buffers[writeI]);
+			writeI++;
+			writes++;
 
 			// Release the semaphore when task is finished
 			if (!ReleaseSemaphore(
@@ -94,10 +94,11 @@ DWORD WINAPI NewWriter(LPVOID lpParam) {
 			{
 				printf("ReleaseSemaphore error: %d\n", GetLastError());
 			}
+			LeaveCriticalSection(&criticalSection);
+			Sleep(1000);
 		}
 	}
 }
-
 
 /*Reader
 * ------
@@ -106,31 +107,12 @@ DWORD WINAPI NewWriter(LPVOID lpParam) {
 * reads from it, signals that now an empty buffer is ready and goes off
 * to process the data (printf()).
 */
-//unsigned __stdcall Reader(void* arg)
-//{
-//	task* t = (task*)arg;
-//	char taken;
-//	while (true)
-//	{
-//		//wait_semaphore(&emptybuffers);
-//		wait_semaphore(&fullbuffers);
-//		//Take
-//		taken = buffers[readI];
-//		buffers[readI] = 0;
-//		Sleep(1000);
-//		signal_semaphore(&emptybuffers);
-//		//Consume (print buffer)
-//		printf("        Reader read: %c\n", taken);
-//	}
-//}
-
 DWORD WINAPI NewReader(LPVOID lpParam) {
 	DWORD dwWaitResult;
-	BOOL bContinue = TRUE;
 	char taken;
 	int reads = 0;
 
-	while (bContinue)
+	while (TRUE)
 	{
 		if (reads >= readsWrites)
 			return 0;
@@ -143,22 +125,15 @@ DWORD WINAPI NewReader(LPVOID lpParam) {
 		if (dwWaitResult == WAIT_OBJECT_0)
 		{
 			//Take
-			taken = buffers[readI];
-			buffers[readI] = 0;
-			reads++;
-			printf("        Reader read: %c\n", taken);
-			Sleep(1000);
-			//Consume (print buffer)
-
-			/*printf("Reader reading...:");
-			for (int i = 0; i < NUM_TOTAL_BUFFERS; i++)
+			//Read one buffer
+			printf("Reader read at buffer[%d]: %s\n", writeI - 1, buffers[writeI - 1]);
+			//Clear it
+			for (int i = 0; i < DATA_LENGTH; i++)
 			{
-				printf(" %c", buffers[i]);
-				buffers[i] = 0;
-				Sleep(1000 / NUM_DISCHARGE_POLICIES);
+				buffers[writeI][i] = 0;
 			}
-			printf("\n");
-			reads++;*/
+			writeI--;
+			reads++;
 
 			// Release the semaphore when task is finished
 			if (!ReleaseSemaphore(
@@ -168,6 +143,8 @@ DWORD WINAPI NewReader(LPVOID lpParam) {
 			{
 				printf("ReleaseSemaphore error: %d\n", GetLastError());
 			}
+			LeaveCriticalSection(&criticalSection);
+			Sleep(1000);
 		}
 	}
 }
