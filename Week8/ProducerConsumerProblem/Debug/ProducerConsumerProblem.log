@@ -1,3 +1,1 @@
-﻿  main.c
-C:\Users\nikla\Documents\Uni\Semester_4\C\OSCO_4\Week8\ProducerConsumerProblem\main.c(135,7): warning C4101: 'taken': unreferenced local variable
-  ProducerConsumerProblem.vcxproj -> C:\Users\nikla\Documents\Uni\Semester_4\C\OSCO_4\Week8\ProducerConsumerProblem\Debug\ProducerConsumerProblem.exe
+﻿  ProducerConsumerProblem.vcxproj -> C:\Users\nikla\Documents\Semester_4\OSCO_4\Week8\ProducerConsumerProblem\Debug\ProducerConsumerProblem.exe

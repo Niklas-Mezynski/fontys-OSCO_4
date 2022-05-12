@@ -1,0 +1,6 @@
+﻿  main.c
+C:\Users\nikla\Documents\Semester_4\OSCO_4\Week9\DiningPhilosophersProblem\main.c(40,62): warning C4022: 'CreateThread': pointer mismatch for actual parameter 4
+C:\Users\nikla\Documents\Semester_4\OSCO_4\Week9\DiningPhilosophersProblem\main.c(61,35): warning C4311: 'type cast': pointer truncation from 'LPVOID' to 'int'
+  OSCO.c
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.31.31103\include\yvals_core.h(23,1): fatal error C1189: #error:  STL1003: Unexpected compiler, expected C++ compiler.
+  Generating Code...

@@ -1,1 +1,6 @@
-﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(439,5): error MSB8020: The build tools for v143 (Platform Toolset = 'v143') cannot be found. To build using the v143 build tools, please install v143 build tools.  Alternatively, you may upgrade to the current Visual Studio tools by selecting the Project menu or right-click the solution, and then selecting "Retarget solution".
+﻿  main.c
+C:\Users\nikla\Documents\Semester_4\OSCO_4\Week8\ProducerConsumerProblem\main.c(112,7): warning C4101: 'taken': unreferenced local variable
+  OSCO.c
+C:\Users\nikla\Documents\Semester_4\OSCO_4\Week8\ProducerConsumerProblem\OSCO.c(10,8): warning C4013: 'rand_s' undefined; assuming extern returning int
+  Generating Code...
+  ProducerConsumerProblem.vcxproj -> C:\Users\nikla\Documents\Semester_4\OSCO_4\Week8\ProducerConsumerProblem\x64\Debug\ProducerConsumerProblem.exe
