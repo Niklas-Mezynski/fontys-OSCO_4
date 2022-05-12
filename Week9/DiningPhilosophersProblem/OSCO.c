@@ -1,12 +1,14 @@
-#include <climits>
+//#include <climits>
+#include "OSCO.h"
 #define _CRT_RAND_S
+
 
 int random_number(int max_num)
 {
 	unsigned int number = 0, out = 0;
 
 	rand_s(&number);
-	out = (unsigned int)((double)number / ((double)UINT_MAX + 1) * max_num) + 1;
+	out = (unsigned int)((double)number / ((double)0xffffffff + 1) * max_num) + 1;
 	return out;
 }
 
@@ -26,7 +28,8 @@ int rand_between(int min_num, int max_num)
 
 
 	rand_s(&number);
-	result = (unsigned int)(((double)number / ((double)UINT_MAX + 1)) * (hi_num - low_num) + 1) + low_num;
+	result = (unsigned int)(((double)number / ((double)0xffffffff + 1)) * (hi_num - low_num) + 1) + low_num;
+	//result = (unsigned int)(((double)number / ((double)UINT_MAX + 1)) * (hi_num - low_num) + 1) + low_num;
 
 	return result;
 }

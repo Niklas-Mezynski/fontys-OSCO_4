@@ -48,6 +48,8 @@ int main(int argc, char** argv)
 		}
 	}
 
+	SetThreadPriority(philosopherThreads[3], THREAD_PRIORITY_HIGHEST);
+
 
 	//Wait for all threads to finish
 	WaitForMultipleObjects(NUM_DINERS, philosopherThreads, TRUE, 0xFFFFFFFF);
@@ -65,14 +67,12 @@ DWORD WINAPI Philosopher(LPVOID lpParam) {
 	DWORD waitResultR;
 	DWORD waitResultL;
 
-
+	WaitForSingleObject(numEating, 0L);
+	EnterCriticalSection(&criticalSection);
+	printf("Philosopher %d is thinking...\n", philosopherNo);
+	LeaveCriticalSection(&criticalSection);
+	Sleep(rand_between(250, 1000));
 	while (timesAte < EAT_TIMES) {
-
-		WaitForSingleObject(numEating, 0L);
-		EnterCriticalSection(&criticalSection);
-		printf("Philosopher %d is thinking...\n", philosopherNo);
-		LeaveCriticalSection(&criticalSection);
-		Sleep(500);
 		waitResultR = WaitForSingleObject(forks[(philosopherNo + 1) % 5], 0L);
 		waitResultL = WaitForSingleObject(forks[philosopherNo], 0L);
 
