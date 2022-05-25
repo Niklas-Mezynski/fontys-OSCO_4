@@ -6,6 +6,7 @@
 
 #define MAX_CYCLES 20
 #define PROCESSES 5
+#define RR_TIME_PER_PROCESS 3
 
 Process *processes[PROCESSES];
 int currentTick = 0;
@@ -15,22 +16,22 @@ void simulateFCFS();
 void simulateRoundRobin();
 void increaseWaitingTimeForQueue(LL *queue);
 void putNewProcessesInQueue(LL *queue);
+void calcAndPrintResults();
 
 int main()
 {
-    fillProcessesArray();
     simulateFCFS();
+    simulateRoundRobin();
 }
 
 void simulateRoundRobin()
 {
-}
-
-void simulateFCFS()
-{
+    fillProcessesArray();
+    printf("Starting round robin simulation\n");
     LL queue;
     constructLL(&queue);
-    Process *currentP = 0;
+    Process *currentP = NULL;
+
     for (currentTick = 0; currentTick <= MAX_CYCLES; currentTick++)
     {
         usleep(420 * 1000);
@@ -38,11 +39,64 @@ void simulateFCFS()
         // Increase waiting time for all processes in the queue (for measuring)
         increaseWaitingTimeForQueue(&queue);
 
-        // Schedule the threads into the queue (when their arrival time is reached)
+        // Schedule new processes into the queue (when their arrival time is reached)
+        putNewProcessesInQueue(&queue);
+
+        //If a process is running... decrease waiting time
+        if (currentP != NULL)
+        {
+            currentP->serviceT--;
+            printf("Process %c is running.. remaining time %d\n", currentP->name, currentP->serviceT);
+            // If the process is done, remove it and set the completion time (for measuring)
+            if (currentP->serviceT <= 0)
+            {
+                currentP->completionT = currentTick;
+                currentP = NULL;
+            }
+        }
+
+        // If the time for the running process is over -> round robin to the next one
+        if (currentP != NULL && (currentTick % RR_TIME_PER_PROCESS) == 0)
+        {
+            // Check if there even is another process in the queue
+            if (numbInLL(&queue) > 0)
+            {
+                // Add current process to the end of the queue and get the first one from the queue
+                addRearLL(&queue, currentP);
+                currentP = deleteLL(&queue);
+                printf("Process %c has been scheduled, remaining runtime: %d\n", currentP->name, currentP->serviceT);
+            }
+        }
+
+        // If there is no process running, schedule one from the queue (if there is one)
+        if (currentP == NULL && numbInLL(&queue) > 0)
+        {
+            currentP = deleteLL(&queue);
+            printf("Process %c has been scheduled, remaining runtime: %d\n", currentP->name, currentP->serviceT);
+        }
+    }
+
+    calcAndPrintResults();
+}
+
+void simulateFCFS()
+{
+    fillProcessesArray();
+    LL queue;
+    constructLL(&queue);
+    Process *currentP = NULL;
+    for (currentTick = 0; currentTick <= MAX_CYCLES; currentTick++)
+    {
+        usleep(420 * 1000);
+        printf("ClockCycle %d: ", currentTick);
+        // Increase waiting time for all processes in the queue (for measuring)
+        increaseWaitingTimeForQueue(&queue);
+
+        // Schedule the processes into the queue (when their arrival time is reached)
         putNewProcessesInQueue(&queue);
 
         // If there is a process running -> decrease remaining running time
-        if (currentP != 0)
+        if (currentP != NULL)
         {
             // Decrease the remaining service time for that process
             currentP->serviceT--;
@@ -51,7 +105,7 @@ void simulateFCFS()
             if (currentP->serviceT <= 0)
             {
                 currentP->completionT = currentTick;
-                currentP = 0;
+                currentP = NULL;
             }
             else
             {
@@ -65,12 +119,17 @@ void simulateFCFS()
             continue;
         }
         currentP = deleteLL(&queue);
-        printf("Process %c has been scheduled, runtime: %d\n", currentP->name, currentP->serviceT);
+        printf("Process %c has been scheduled, remaining runtime: %d\n", currentP->name, currentP->serviceT);
     }
 
+    calcAndPrintResults();
+}
+
+void calcAndPrintResults()
+{
     printf("\nResults\n");
     int waitT, waitTSum, turnArroundT = 0, turnArroundTSum = 0;
-    //Print the results and calc the average waiting/turn around time
+    // Print the results and calc the average waiting/turn around time
     for (int i = 0; i < PROCESSES; i++)
     {
         waitT = processes[i]->waitTime;
@@ -79,7 +138,7 @@ void simulateFCFS()
         turnArroundTSum += turnArroundT;
         printf("Process %c Waiting time: %d, Turn around time: %d\n", processes[i]->name, waitT, turnArroundT);
     }
-    printf("Average Waiting time: %f, Turn around time: %f\n", (double) waitTSum / PROCESSES, (double) turnArroundTSum / PROCESSES);
+    printf("Average Waiting time: %f, Turn around time: %f\n", (double)waitTSum / PROCESSES, (double)turnArroundTSum / PROCESSES);
 }
 
 void increaseWaitingTimeForQueue(LL *queue)
