@@ -34,7 +34,37 @@ public class Main {
                 return;
             }
         }
-        System.out.println("Average lookup counts: " + (double) lookupCountSum / transactions.size() + " Overall lines: " + sourceFileLines.size());
+        System.out.println("---Linear search on randomized file");
+        System.out.println("Average lookup counts: " + (double) lookupCountSum / transactions.size());
+        System.out.println("Overall lines in the file: " + sourceFileLines.size());
+
+        //Experiment 2
+        transactions = getTransactions();
+        lookupCountSum = 0;
+        for (String transaction : transactions) {
+            int lookUpCounts = 0;
+            try {
+                File sourceFile = new File("fileWithKey.txt");
+                Scanner myReader = new Scanner(sourceFile);
+                while (myReader.hasNextLine()) {
+                    String data = myReader.nextLine();
+                    lookUpCounts++;
+                    if (data.length() >= 4) {
+                        if (transaction.equals(data.substring(0, 4))) {
+                            break;
+                        }
+                    }
+                }
+                lookupCountSum += lookUpCounts;
+                myReader.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                return;
+            }
+        }
+        System.out.println("---Linear search on ordered file");
+        System.out.println("Average lookup counts: " + (double) lookupCountSum / transactions.size());
+        System.out.println("Overall lines in the file: " + sourceFileLines.size());
     }
 
     private static LinkedList<String> getTransactions() {
