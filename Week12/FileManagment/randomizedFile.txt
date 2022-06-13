@@ -1,0 +1,172 @@
+0137                }
+0162        }
+0073    if (main_pre_done)
+0144                    print "    tcase_add_exit_test(" tcvar ", " t ", " \
+0116    # substitution string is supposed to result in an actual
+0108    print "    int nf;";
+0166        for (i=1; i != num_suites; ++i) {
+0053    print "";
+0079    print "{";
+0037
+0103            print "    TCase *" tcvar " = tcase_create(" \
+0097        s = suite_names[i];
+0012function duplicate_check()
+0062}
+0063
+0029}
+0170    }
+0167            svar = suite_var_name(i);
+0153                        test_parameters[t, arg1] ", " test_parameters[t, arg2] \
+0071    if (main_post_done)
+0155                }
+0034    print "{";
+0077    print "";
+0010}
+0115    # interpolation, so the backslashes must be double-escaped. The
+0068
+0084function suite_var_name(num)
+0047    main_post_done = 1;
+0017                        "\" (must be a C identifier).");
+0048
+0022        error_with_line("Test \"" cur_test "\" already exists.");
+0146                }
+0126        s = suite_names[i];
+0156                else if (test_type == 5) {
+0169        }
+0049    print "";
+0051    print_runner_bindings();
+0120    return "\"" raw "\"";
+0094function print_main_declarations()
+0143                else if (test_type == 2) {
+0025    # Verify that any implied test case is not a repeat.
+0039}
+0134                test_type = tcase_test_map[tc, k, test_type_flag];
+0018    }
+0160                }
+0091    return "tc" snum+1 "_" tcnum+1;
+0050
+0070{
+0067}
+0082}
+0083
+0107    print "    SRunner *sr = srunner_create(s1);";
+0032{
+0119    gsub("\"", "\\\"", raw);
+0064function in_main_error()
+0065{
+0009    ++num_tests;
+0021    if (cur_test in test_registry) {
+0089function tcase_var_name(snum, tcnum)
+0098        svar = suite_var_name(i);
+0066    error_with_line("Cannot specify tests after main-pre or main-post.");
+0136                    print "    tcase_add_test(" tcvar ", " t ");";
+0008    }
+0074        error_with_line("main-pre specified multiple times.");
+0004
+0042{
+0059function in_main()
+0096    for (i=0; i != num_suites; ++i) {
+0055    print "    nf = srunner_ntests_failed(sr);";
+0015    if (!match(cur_test, "^" pp_test_name "$")) {
+0000function test_pre()
+0145                        test_parameters[t, arg1] ");";
+0128        for (j=0; j != suite_num_tcases[s]; ++j) {
+0005    if (in_test) {
+0152                    print "    tcase_add_loop_exit_test(" tcvar ", " t ", " \
+0171}
+0054    print "    srunner_run_all(sr, CK_ENV);";
+0002    if (in_main())
+0001{
+0013{
+0014    # Confirm that the test name is a valid C identifier.
+0147                else if (test_type == 3) {
+0057}
+0150                }
+0110
+0030
+0117    # double-backslash.
+0095{
+0161            }
+0138                else if (test_type == 1) {
+0118    gsub("\\\\", "\\\\", raw);
+0043    if (main_post_done)
+0072        error_with_line("main-pre specified after main-post.");
+0164    if (num_suites > 1) {
+0024
+0023    }
+0026    if (num_cur_tests == 0 && (cur_tcase, 0, 0) in tcase_test_map) {
+0158                        ", " test_parameters[t, arg1] ", " test_parameters[t, arg2] \
+0061    return main_pre_done || main_post_done;
+0163    }
+0027        error_with_line("Test Case \"" name "\" already exists.");
+0086    return "s" num+1;
+0038    needs_line_decl = 0;
+0154                        ", " test_parameters[t, arg3] ");";
+0020    # Verify that it has not already been used.
+0035    if (!clean_mode)
+0056    print "    srunner_free(sr);";
+0129            tc = suite_tcase_map[s, j];
+0139                    print "    tcase_add_loop_test(" tcvar ", " t ", " \
+0046        main_pre();
+0093
+0044        error_with_line("main-post specified multiple times.");
+0132            for (k=0; k != tcase_num_tests[tc]; ++k) {
+0124{
+0114    # argument will go through both string interpolation /and/ regex
+0101            tc = suite_tcase_map[s, j];
+0141                        ");";
+0069function main_pre()
+0031function test_post()
+0076    finish_test();
+0100        for (j=0; j != suite_num_tcases[s]; ++j) {
+0113    # The next line might look funny, but remember that the first
+0133                t = tcase_test_map[tc, k, test_name];
+0168            print "    srunner_add_suite(sr, " svar ");";
+0033    print "START_TEST(" cur_test ")";
+0003        in_main_error();
+0159                        ", " test_parameters[t, arg3] ");";
+0036        print "#line " FNR+1;
+0104                    string_encode(tc) ");";
+0087}
+0045    if (!main_pre_done)
+0088
+0135                if (test_type == 0) {
+0006        finish_test();
+0011
+0122
+0127        svar = suite_var_name(i);
+0131            print "    suite_add_tcase(" svar ", " tcvar ");";
+0151                else if (test_type == 4) {
+0165        print "";
+0080
+0060{
+0105        }
+0148                    print "    tcase_add_test_raise_signal(" tcvar ", " t ", " \
+0130            tcvar = tcase_var_name(i, j);
+0099        print "    Suite *" svar " = suite_create(" string_encode(s) ");";
+0078    print "int main(void)";
+0028    }
+0111function string_encode(raw)
+0140                        test_parameters[t, arg1] ", " test_parameters[t, arg2] \
+0092}
+0052
+0112{
+0075    main_pre_done = 1;
+0040
+0123function print_runner_bindings()
+0149                        test_parameters[t, arg1] ");";
+0058
+0007        print "";
+0106    }
+0102            tcvar = tcase_var_name(i, j);
+0016        error_with_line("Malformed test name \"" cur_test \
+0041function main_post()
+0142                }
+0090{
+0019
+0109}
+0081    print_main_declarations();
+0125    for (i=0; i != num_suites; ++i) {
+0121}
+0157                    print "    tcase_add_loop_test_raise_signal(" tcvar ", " t \
+0085{

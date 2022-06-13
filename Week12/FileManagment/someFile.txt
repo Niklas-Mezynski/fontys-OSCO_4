@@ -1,0 +1,172 @@
+function test_pre()
+{
+    if (in_main())
+        in_main_error();
+
+    if (in_test) {
+        finish_test();
+        print "";
+    }
+    ++num_tests;
+}
+
+function duplicate_check()
+{
+    # Confirm that the test name is a valid C identifier.
+    if (!match(cur_test, "^" pp_test_name "$")) {
+        error_with_line("Malformed test name \"" cur_test \
+                        "\" (must be a C identifier).");
+    }
+
+    # Verify that it has not already been used.
+    if (cur_test in test_registry) {
+        error_with_line("Test \"" cur_test "\" already exists.");
+    }
+
+    # Verify that any implied test case is not a repeat.
+    if (num_cur_tests == 0 && (cur_tcase, 0, 0) in tcase_test_map) {
+        error_with_line("Test Case \"" name "\" already exists.");
+    }
+}
+
+function test_post()
+{
+    print "START_TEST(" cur_test ")";
+    print "{";
+    if (!clean_mode)
+        print "#line " FNR+1;
+
+    needs_line_decl = 0;
+}
+
+function main_post()
+{
+    if (main_post_done)
+        error_with_line("main-post specified multiple times.");
+    if (!main_pre_done)
+        main_pre();
+    main_post_done = 1;
+
+    print "";
+
+    print_runner_bindings();
+
+    print "";
+    print "    srunner_run_all(sr, CK_ENV);";
+    print "    nf = srunner_ntests_failed(sr);";
+    print "    srunner_free(sr);";
+}
+
+function in_main()
+{
+    return main_pre_done || main_post_done;
+}
+
+function in_main_error()
+{
+    error_with_line("Cannot specify tests after main-pre or main-post.");
+}
+
+function main_pre()
+{
+    if (main_post_done)
+        error_with_line("main-pre specified after main-post.");
+    if (main_pre_done)
+        error_with_line("main-pre specified multiple times.");
+    main_pre_done = 1;
+    finish_test();
+    print "";
+    print "int main(void)";
+    print "{";
+
+    print_main_declarations();
+}
+
+function suite_var_name(num)
+{
+    return "s" num+1;
+}
+
+function tcase_var_name(snum, tcnum)
+{
+    return "tc" snum+1 "_" tcnum+1;
+}
+
+function print_main_declarations()
+{
+    for (i=0; i != num_suites; ++i) {
+        s = suite_names[i];
+        svar = suite_var_name(i);
+        print "    Suite *" svar " = suite_create(" string_encode(s) ");";
+        for (j=0; j != suite_num_tcases[s]; ++j) {
+            tc = suite_tcase_map[s, j];
+            tcvar = tcase_var_name(i, j);
+            print "    TCase *" tcvar " = tcase_create(" \
+                    string_encode(tc) ");";
+        }
+    }
+    print "    SRunner *sr = srunner_create(s1);";
+    print "    int nf;";
+}
+
+function string_encode(raw)
+{
+    # The next line might look funny, but remember that the first
+    # argument will go through both string interpolation /and/ regex
+    # interpolation, so the backslashes must be double-escaped. The
+    # substitution string is supposed to result in an actual
+    # double-backslash.
+    gsub("\\\\", "\\\\", raw);
+    gsub("\"", "\\\"", raw);
+    return "\"" raw "\"";
+}
+
+function print_runner_bindings()
+{
+    for (i=0; i != num_suites; ++i) {
+        s = suite_names[i];
+        svar = suite_var_name(i);
+        for (j=0; j != suite_num_tcases[s]; ++j) {
+            tc = suite_tcase_map[s, j];
+            tcvar = tcase_var_name(i, j);
+            print "    suite_add_tcase(" svar ", " tcvar ");";
+            for (k=0; k != tcase_num_tests[tc]; ++k) {
+                t = tcase_test_map[tc, k, test_name];
+                test_type = tcase_test_map[tc, k, test_type_flag];
+                if (test_type == 0) {
+                    print "    tcase_add_test(" tcvar ", " t ");";
+                }
+                else if (test_type == 1) {
+                    print "    tcase_add_loop_test(" tcvar ", " t ", " \
+                        test_parameters[t, arg1] ", " test_parameters[t, arg2] \
+                        ");";
+                }
+                else if (test_type == 2) {
+                    print "    tcase_add_exit_test(" tcvar ", " t ", " \
+                        test_parameters[t, arg1] ");";
+                }
+                else if (test_type == 3) {
+                    print "    tcase_add_test_raise_signal(" tcvar ", " t ", " \
+                        test_parameters[t, arg1] ");";
+                }
+                else if (test_type == 4) {
+                    print "    tcase_add_loop_exit_test(" tcvar ", " t ", " \
+                        test_parameters[t, arg1] ", " test_parameters[t, arg2] \
+                        ", " test_parameters[t, arg3] ");";
+                }
+                else if (test_type == 5) {
+                    print "    tcase_add_loop_test_raise_signal(" tcvar ", " t \
+                        ", " test_parameters[t, arg1] ", " test_parameters[t, arg2] \
+                        ", " test_parameters[t, arg3] ");";
+                }
+            }
+        }
+    }
+    if (num_suites > 1) {
+        print "";
+        for (i=1; i != num_suites; ++i) {
+            svar = suite_var_name(i);
+            print "    srunner_add_suite(sr, " svar ");";
+        }
+    }
+}
